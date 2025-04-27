@@ -1,0 +1,4 @@
+{% macro tag(label) -%}
+  {% set label = label | replace("Type/", "") %}
+  <span class="post__type post__type--}">{{ label }}</span>
+{%- endmacro %}

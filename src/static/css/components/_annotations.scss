@@ -1,0 +1,144 @@
+@use 'sass:list';
+@use 'sass:math';
+@use '../tokens';
+
+%tooltip {
+  &:hover {
+    --tipOpacity: 1;
+    --tipTransform: translateY(0px);
+  }
+  &::after {
+    pointer-events: none;
+    content: attr(data-content);
+    transform: var(--tipTransform, translateY(4px));
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    opacity: var(--tipOpacity, 0);
+    display: block;
+    position: absolute;
+    line-height: 1.5em;
+    height: auto;
+    padding: var(--u4) var(--u8);
+    border-radius: tokens.$cornerMedium;
+    top: calc(var(--height, 0) + var(--u8));
+    left: var(--tipLeft, 0);
+    background-color: var(--materialElevatedPrimaryColor);
+    color: var(--contentPrimaryColor);
+    font-size: var(--type--2);
+    box-shadow: 
+      0px 6px 12px rgba(0, 0, 0, 0.1), 
+      0px 1.8px 3.6px rgba(0, 0, 0, 0.06), 
+      0px 0.76px 1.52px rgba(0, 0, 0, 0.05), 
+      0px 0.28px 0.56px rgba(0, 0, 0, 0.034);
+  }
+}
+
+.annotation-container {
+  position: relative;
+  .screen {
+    opacity: 0.5;
+  }
+}
+
+.annotation-container:has(.annotation--trigger:hover) {
+  .annotation {
+    opacity: 0;
+  }
+  .annotation:has(.annotation--trigger:hover) {
+    opacity: 1;
+  }
+}
+
+.annotation {
+  display: block;
+  position: absolute;
+  outline: 2px solid var(--c100);
+  box-shadow:
+    0 3px 6px 0 rgba(0,0,0,.4),
+    0 0.9px 1.8px 0 rgba(0,0,0,.26),
+    0 .375px 0.75px 0 rgba(0,0,0,.2),
+    0 .135px .27px 0 rgba(0,0,0,.014);
+  inset: var(--inset);
+  width: var(--width);
+  height: var(--height);
+  border-radius: var(--corners);
+  opacity: 1;
+  transition: opacity 0.2s ease-out;
+  .screen-container {
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--corners);
+  }
+  img {
+    position: absolute;
+    inset: var(--opposingInset, 0 0 0);
+    opacity: 1 !important;
+  }
+}
+
+.screen-container {
+  z-index: 0;
+}
+
+.annotation--trigger {
+  display: block;
+  height: var(--height, var(--u8));
+  width: var(--width, var(--u8));
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  @extend %tooltip;
+  &::after {
+    position: relative;
+    width: 220px; // magic number to be optical window width + 8px h margins
+  }
+}
+
+
+// Diligence annotations
+
+// positioning
+.annotation--new-task {
+  --width: 26px;
+  --height: 26px;
+  --inset: 52px auto auto 226px;
+  --opposingInset: -52px auto auto -226px;
+  --corners: 3px;
+  --tipLeft: -192px;
+}
+
+.annotation--undock {
+  --width: 26px;
+  --height: 26px;
+  --inset: 52px auto auto 52px;
+  --opposingInset: -52px auto auto -52px;
+  --corners: 3px;
+  --tipLeft: -18px;
+}
+
+.annotation--search {
+  --width: 194px;
+  --height: 24px;
+  --inset: 94px auto auto 55px;
+  --opposingInset: -94px auto auto -55px;
+  --corners: 12px;
+  --tipLeft: -21px;
+}
+
+.annotation--categories {
+  --width: 48px;
+  --height: 11px;
+  --inset: 125px auto auto 128px;
+  --opposingInset: -125px auto auto -128px;
+  --corners: 3px;
+  --tipLeft: -94px;
+}
+
+.annotation--tasks {
+ --width: 224px;
+ --height: 311px;
+ --inset: 143px auto auto 40px;
+ --opposingInset: -143px auto auto -40px;
+ --corners: 4px 4px 7px 7px;
+}

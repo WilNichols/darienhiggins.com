@@ -1,0 +1,122 @@
+@use 'fonts';
+@use '../size/aliases' as tokens;
+@forward 'fonts';
+
+$body-gap: 1em;
+@mixin textStyles {
+  @include fonts.placeholders;
+}
+
+@mixin headingStyles {
+  @for $i from 1 through 6 {
+    %heading--#{$i} {
+      font-size: var(--type-#{6 - $i});
+      @include fonts.placeholders;
+      @extend %font--display-medium;
+    }
+  }
+}
+
+@mixin textElementStyles {
+
+  @include textStyles;
+
+  a {
+    color: var(--contentPrimaryColor);
+    text-decoration-thickness: tokens.$lineHeight;
+    text-underline-offset: tokens.$lineHeight;
+    p &, .page-info &, .related-posts &, .content-body &, .page-info__list & {
+      color: var(--linkColor);
+      &:visited {
+        color: var(--linkVisitedColor);
+      }
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6, .note-title {  
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0 auto $body-gap auto;
+    text-wrap: pretty;
+    line-height: 1.5em;
+  }
+
+  sup {
+    font-size: var(--type--2);
+    a {
+      text-decoration: none;
+    }
+  }
+
+  s {
+    color: var(--contentSecondaryColor);
+    text-decoration-color: var(--contentPrimaryColor);
+  }
+
+  $blockquoteOffset: 0;
+  blockquote {
+    margin: 0 0 1em 0;
+    padding: 0 $blockquoteOffset;
+    font-style: oblique;
+    p:first-child::before,
+    p:last-child::after {
+      font-style: italic;
+      color: var(--contentSecondaryColor);
+    } 
+    p:first-child::before {
+      content: '“';
+      position: absolute;
+      transform: translateX(-100%);
+    }
+    p:last-child::after {
+      content: '”';
+    }
+  }
+
+  cite {
+    font-size: var(--type--2);
+    color: var(--contentSecondaryColor);
+    display: inline-block;
+    line-height: 1.5em;
+    font-style: normal;
+    padding: 0 $blockquoteOffset;
+  }
+
+  @include headingStyles;
+
+  @for $i from 1 through 6 {
+    .heading--#{$i} {
+      @extend %heading--#{$i};
+      line-height: 1.5em;
+      position: relative;
+    }
+  }
+
+  .heading--1 {
+    line-height: 1em;
+    margin: 0 0 .25em 0;
+  }
+
+  .page__title {
+    font-size: var(--type-0);
+    @extend %font--display-medium;
+  }
+
+  .page__subtitle {
+    font-size: var(--type--1);
+    @extend %font--text-regular;
+    display: block;
+    color: var(--contentSecondaryColor);
+  }
+
+  .backlink__title {
+    font-size: var(--type--1);
+    @extend %font--display-medium;
+  }
+
+  .backlink__title, .backlink__preview {
+    color: var(--contentPrimaryColor);
+  }
+}

@@ -1,0 +1,64 @@
+@use '../tokens';
+
+.footnote-ref {
+  font-size: var(--type--2);
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup.footnote-ref {
+  top: -0.75em;
+}
+
+sub.footnote-ref {
+  bottom: -0.75em;
+}
+
+%topBorder {
+  padding-top: 2rem;
+  border-top: 1px solid var(--edgeColor);
+}
+
+%bottomBorder {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--edgeColor);
+}
+
+.footnotes {
+  font-size: var(--type--2);
+  margin-top: 2rem;
+  @extend %topBorder;
+}
+
+:has(> .footnotes) + .page__footer {
+  @extend %topBorder;
+}
+
+.footnotes-list {
+  display: flex;
+  flex-direction: column;
+  gap: tokens.$gapSmall;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.footnote-item p, .footnote-item {
+  line-height: calc(1.2 * var(--type-0));
+}
+
+
+.footnote-item p {
+  vertical-align: middle;
+  text-align: left;
+  margin: 0;
+}
+
+.footnote-item a {
+  text-decoration-thickness: 1px;
+}
+
+.footnote-item::marker {
+  color: var(--contentTertiaryColor);
+}

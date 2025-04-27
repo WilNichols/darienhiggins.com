@@ -1,0 +1,56 @@
+@use 'sass:math';
+@use '../tokens';
+
+@include tokens.textStyles;
+
+.posts-list, .about-me, .header {
+  max-width: tokens.$categoryWidth;
+  width: 100%;
+}
+
+.posts-list {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap:tokens.$gapSmall;
+    width: 100%;
+  }
+  @media (width <= tokens.$breakpoint) {
+    grid-column: 1 / -1;
+    max-width: unset;
+    width: 100%;
+  }
+}
+
+.posts-month {
+  display: flex;
+  flex-direction: column;
+  gap: math.div(tokens.$gapSmall, 2);
+}
+
+.posts {
+  & {
+    display: grid;
+    grid-template-columns: min-content auto min-content min-content;
+    row-gap: tokens.$gapSmall;
+    column-gap: tokens.$note-title-gap;
+  }
+  @media(pointer: fine) {
+    row-gap: .6em;
+  }
+}
+
+.page__footer.page__footer--grid {
+  & {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    gap: 5px;
+    margin: unset;
+    max-width: unset;
+    margin-top: math.div(tokens.$gapSmall, 2);
+  }
+  .copyright__text {
+    grid-column: 2 / 4;
+  }
+}

@@ -1,0 +1,23 @@
+@use 'tokens';
+
+@include tokens.textStyles;
+
+body {
+  font-size: var(--type-0);
+  line-height: tokens.$gapSmall;
+  @extend %font--text-regular;
+  --rounding-interval: 1px;
+  padding: var(--col);
+  background-color: var(--materialPrimaryColor);
+  color: var(--contentPrimaryColor);
+}
+
+.page {
+  // display: grid;
+  width: auto;
+  row-gap: tokens.$gapSmall;
+  column-gap: tokens.$gapMedium;
+  @media (width <= tokens.$breakpoint) {
+    align-content: start;
+  }
+}

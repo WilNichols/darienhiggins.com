@@ -1,0 +1,347 @@
+@use 'sass:math';
+@use '../tokens';
+@use '../abstractions/hover-blur';
+
+@include tokens.textStyles;
+@include tokens.headingStyles;
+
+.post__month {
+  white-space-collapse: break-spaces;
+}
+
+.post__month, .post__year {
+  font-size: var(--type--1);
+  @extend %font--display-medium;
+}
+
+.post__month {
+  color: var(--contentPrimaryColor);
+}
+
+.post__year, .post__day {
+  color: var(--contentSecondaryColor);
+}
+
+.post__accessories {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: end;
+  gap: 5px;
+  min-height: tokens.$gapSmall;
+  line-height: tokens.$gapSmall;
+  align-items: center;
+  > li {
+    display: contents;
+  }
+}
+
+.post__type {
+  $p: 3px 5px;
+  & {
+    position: relative;
+    display: inline-flex;
+    justify-self: flex-end;
+    // height: 16px;
+    line-height: 100%;
+    border-radius: tokens.$cornerSmall;
+    background-color: var(--tagBackgroundColor);
+    color: var(--tagContentColor);
+    box-shadow: inset 0 0 0 var(--px) var(--tagBorderColor);
+    font-size: 8pt;
+    padding: $p;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    @extend %font--display-medium; 
+    gap: 5px;
+    overflow: clip;
+    user-select: none;
+    -webkit-user-select: none;
+    white-space: nowrap;
+  }
+  &--evergreen {
+    background-color: var(--evergreenBackgroundColor);
+    color: var(--evergreenContentcolor);
+    box-shadow: inset 0 0 0 var(--px) var(--evergreenBorderColor);
+    &[data-version]::after {
+      content: attr(data-version);
+      padding: $p;
+      margin: -3px -5px -3px -2px;
+      background-color: var(--evergreenVersionBackgroundColor);
+      color: var(--evergreenVersionContentColor);
+      box-shadow: inset 0 0 0 var(--px) var(--evergreenVersionBorderColor);
+      border-radius: 0 tokens.$cornerSmall tokens.$cornerSmall 0;
+    }
+  }
+}
+
+.posts-list .note {
+  // necessary for subgrid
+  display: contents;
+}
+.post__link {
+  & {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    text-decoration: none;
+    align-items: flex-start;
+    color: var(--contentPrimaryColor);
+    position: relative;
+    row-gap: 2px; // this is a const because it looks better
+    opacity: 1;
+    transition: opacity tokens.$x ease-out;
+    @extend %listItemBackground;
+    // Platter overrides
+    &::before {
+      inset: -6px -8px;
+      z-index: -1;
+    }
+    &:has(> .post__summary) {
+      &::before {
+        inset: -6px -8px 0 -8px;
+        border-radius: .6em .6em 0 0;
+      }
+    }
+  }
+  // give more space for title if no accessories
+  .post__title {
+    grid-column: 2 / 4;
+  }
+  .post__title:has(~ .post__accessories) {
+    grid-column: 2 / 3;
+  }
+  .post__direction {
+    z-index: 100;
+    grid-column: 4 / 5;
+    display: grid;
+    color: var(--contentTertiaryColor);
+    place-content: center;
+    margin: auto 0;
+    // adds 4px leading padding, making the col 20px wide
+    padding: 0 0 0 .25rem;
+    @media(pointer: fine) {
+      margin: auto 0;
+      color: var(--contentSecondaryColor);
+      opacity: 0;
+      filter: blur(.3em);
+      transition: tokens.$x transform ease-out, tokens.$x opacity ease-out, tokens.$x filter ease-out;
+    }
+  }
+  .post__accessories {
+    grid-column: 3 / 4;
+    display: flex;
+    gap: 4px;
+    margin: auto 0;
+    > li {
+      display: contents;
+    }
+  }
+  .post__day, .post__title {
+    grid-row: 1 / 2;
+  }
+  .post__preview ~ .post__day, .post__preview ~ .post__title {
+    grid-row: 2 / 3;
+  }
+  .post__day, .post__title, .post__accessories, .post__summary__text  {
+    transition: tokens.$x transform ease-out;
+  }
+  .post__summary__text {
+    opacity: 0;
+    @media(pointer: coarse) {
+      opacity: 1;
+    }
+  }
+  &:hover, &.hover-debug {
+    @extend %blurredBackgroundHover;
+    @media(pointer: fine) {
+      .post__summary {
+        &__text, &::before {
+          filter: blur(0);
+          opacity: 1;
+          transition: tokens.$x opacity ease-out, tokens.$x filter ease-out;
+        }
+      }
+      $d: .25ex;
+      .post__day, .post__title, .post__summary__text {
+        transform: translateX($d);
+      }
+      .post__accessories {
+        transform: translateX(-$d);
+      }
+      .post__direction {
+        transform: translateX(-$d);
+        opacity: 1;
+        filter: blur(0);
+        transition: tokens.$x transform ease-out, tokens.$x opacity ease-out, tokens.$x filter ease-out;
+      }
+    }
+  }
+  &:active {
+    @extend %blurredBackgroundActive;
+    z-index: 100;
+    .post__summary::before {
+      background-color: var(--materialPrimaryActiveColor);
+      transition: background-color 0.1s ease-out;
+    }
+  }
+}
+
+.post__preview {
+  & {
+    display: flex;
+    grid-column: 1 / -1;
+    z-index: 1;
+    position: relative;
+    margin: 2px 0 6px 0; // this offsets the hover effects asymmetrical offsets
+    border-radius: 4px;
+    box-shadow: 
+      0px 6px 12px 1px transparent, 
+      0px 1.8px 3.6px 1px transparent, 
+      0px 0.76px 1.52px 1px transparent, 
+      0px 0.28px 0.56px 1px transparent;
+    transition: tokens.$x box-shadow ease-out;
+  }
+  > * {
+    aspect-ratio: 4 / 3;
+    border-radius: 4px;
+    // apply to the child to avoid clipping on subpixels
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    $s: 0 0 0 var(--px) var(--edgeColor);
+    box-shadow: inset $s;
+    opacity: 1;
+    transition: tokens.$x opacity ease-out;
+  }
+  .post__link:hover & {
+    & {
+      box-shadow: 
+        0px 6px 12px 1px rgba(0, 0, 0, calc(0.05 * var(--shadowMultiplier, 1))), 
+        0px 1.8px 3.6px 1px rgba(0, 0, 0, calc(0.03 * var(--shadowMultiplier, 1))), 
+        0px 0.76px 1.52px 1px rgba(0, 0, 0, calc(0.025 * var(--shadowMultiplier, 1))), 
+        0px 0.28px 0.56px 1px rgba(0, 0, 0, calc(0.017 * var(--shadowMultiplier, 1)));
+    }
+    &::before {
+      transition-duration: inherit;
+      opacity: 0;
+    }
+  }
+}
+
+.post__preview__poster {
+  & {
+    width: 100%;
+    height: auto;
+    background-size: 100%;
+    background-color: var(--materialPrimaryColor);
+  }
+  &.themed-3x {
+    background-image: var(--lightPoster);
+    @media (-webkit-min-device-pixel-ratio: 2) {
+      background-image: var(--lightPoster2x);
+    }
+    @media (-webkit-min-device-pixel-ratio: 3) {
+      background-image: var(--lightPoster3x);
+    }
+    @media (prefers-color-scheme: dark) {
+      background-image: var(--darkPoster);
+      @media (-webkit-min-device-pixel-ratio: 2) {
+        background-image: var(--darkPoster2x);
+      }
+      @media (-webkit-min-device-pixel-ratio: 3) {
+        background-image: var(--darkPoster3x);
+      }
+    }
+  }
+}
+
+.post__day {
+  & {
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    text-align: right;
+  }
+  &--hidden {
+    visibility: hidden; 
+  }
+}
+
+.post__title {
+  padding: 0 tokens.$note-title-gap 0 0;
+}
+
+.post__summary {
+  display: grid;
+  font-size: var(--type-0);
+  text-wrap: pretty;
+  color: var(--contentSecondaryColor);
+  grid-column: 1 / -1;
+  grid-row: 2 / 3;
+  // subgrid doesn't work for columns bc of the absolute positioning?
+  // 20px is magic. 16px icon + 4px margin
+  grid-template-columns: min-content auto 20px;
+  z-index: 100;
+  width: 100%;
+  column-gap: .25em;
+  @media(pointer: fine) {
+    pointer-events: none;
+    position: absolute;
+  }
+    
+  .post__day {
+    grid-column: 1 / 2;
+    opacity: 0;
+    font-size: var(--type-0);
+  }
+  .post__summary__text {
+    z-index: 1;
+    grid-column: 2 / 3;
+    font-size: var(--type--1);
+    transform: translateX(0);
+    @media(pointer: fine) {
+      opacity: 0;
+      filter: blur(.3em);
+      transition: tokens.$x transform ease-out, tokens.$x opacity ease-out, tokens.$x filter ease-out;
+    }
+    &--blockquote {
+      // magic numbers from the inspector. 
+      // at full-width --type--1 = 16px and the width of  “ is 5.97. 5.97/16 ≈ .373em
+      text-indent: -.373em;
+    }
+  }
+  &::before {
+    content: '';
+    display: block;
+    border-radius: 0 0 .6em .6em;
+    background-color: var(--materialPrimaryHoverColor);
+    filter: blur(.3em);
+    will-change: opacity;
+    transition: tokens.$x4 opacity ease-out, tokens.$x4 filter ease-out;
+    // negative top inset prevents a visible gap during the blur animation
+    inset: -1px -8px -6px -8px;
+    position: absolute;
+    opacity: 0;
+  }
+}
+
+// goofy, maybe too much
+// 
+// .posts-month {
+//   opacity: 1;
+//   transition: opacity tokens.$x ease-out;
+// }
+// .note:has(.post__link:hover) ~ .note > .post__link, 
+// .posts-month:has(.post__link:hover) ~ .posts-month,
+// .posts-month:has(~ .posts-month .post__link:hover)  {
+//   opacity: 0.5;
+//   transition: opacity tokens.$x ease-out;
+// }
+// 
+// 
+// .note:has(~ .note > .post__link:hover) .post__link {
+//   opacity: 0.75;
+//   transition: opacity tokens.$x ease-out;
+// }
